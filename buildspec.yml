@@ -1,0 +1,14 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 22
+    commands:
+      - npm install
+  build:
+    commands:
+      - echo "CI Stage: Building and testing..."
+      # Add npm test here if your Moodle app has tests
+artifacts:
+  files:
+    - '**/*'
