@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/SimpleApplication
     docker:
-      - image: cimg/node:18.19
+      - image: cimg/node:22.14
     steps:
       - checkout
       - run:
