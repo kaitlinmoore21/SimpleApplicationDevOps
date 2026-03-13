@@ -16,8 +16,15 @@ jobs:
           name: install-npm
           command: npm install
       - run:
+          name: create-test-results-dir
+          command: mkdir -p test-results/mocha
+      - run:
           name: test-run
           command: npm run test
+          environment:
+            MOCHA_FILE: test-results/mocha/results.xml
+      - store_test_results:
+          path: test-results
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
