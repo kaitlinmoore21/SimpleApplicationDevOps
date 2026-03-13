@@ -1,43 +1,37 @@
 version: 2.1
 
-
-orbs:
-  node: circleci/node@5.1.0
-  heroku: circleci/heroku@2.0.0
-
 jobs:
-  build_and_test:
+  build:
+    working_directory: ~/SimpleApplication
     docker:
-      - image: cimg/node:20.10.0
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Run Build
-          command: npm run build --if-present
-      - run:
-          name: Run Tests
-          command: npm test || echo "No tests found, continuing..."
+      - image: circleci/openjdk:11.0.11
 
-  deploy:
-    docker:
-      - image: cimg/node:20.10.0
     steps:
       - checkout
-      - heroku/install
-      - heroku/deploy-via-git:
-          force: true 
+
+      - run:
+          name: update-npm
+          command: sudo npm install -g npm@5
+
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: install dependencies
+          command: npm install
+
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
 
 workflows:
   version: 2
-  university_pipeline:
+  build_workflow:
     jobs:
-      - build_and_test
-      - deploy:
-          requires:
-            - build_and_test
+      - build:
           filters:
             branches:
               only:
-                - main 
+                - main
